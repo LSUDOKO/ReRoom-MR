@@ -5,71 +5,146 @@
 <h1 align="center">ReRoom MR</h1>
 
 <p align="center"><b>Furnish your real room with your hands.</b><br/>
-A hands-first, seated mixed reality app for Meta Quest. Pinch real-size furniture onto your own floor, drag it around, open its doors and drawers, and restyle the whole room. No controllers.</p>
+A hands-first, seated mixed reality app for Meta Quest. Pinch real-size furniture onto your floor, drag it into place, open its doors and drawers, and restyle the whole room. No controllers, no install.</p>
 
 <p align="center">
-  <a href="https://reroom-mr.adoranto737.workers.dev/xr"><img alt="Open on Meta Quest" src="https://img.shields.io/badge/Meta%20Quest-open%20%2Fxr-1b68fc?style=flat-square&logo=meta&logoColor=white"></a>
+  <a href="https://reroom-mr.adoranto737.workers.dev/xr"><img alt="Open on Meta Quest" src="https://img.shields.io/badge/Meta%20Quest-open%20%2Fxr-1b68fc?style=for-the-badge&logo=meta&logoColor=white"></a>
+  <br/>
   <img alt="WebXR" src="https://img.shields.io/badge/WebXR-passthrough%20%2B%20hand%20tracking-050712?style=flat-square">
-  <img alt="Hands first" src="https://img.shields.io/badge/input-hands%20only-aeb4ff?style=flat-square">
-  <img alt="Seated" src="https://img.shields.io/badge/comfort-seated-f1f2f6?style=flat-square">
+  <img alt="Input" src="https://img.shields.io/badge/input-hands%20only-aeb4ff?style=flat-square">
+  <img alt="Comfort" src="https://img.shields.io/badge/comfort-seated-f1f2f6?style=flat-square">
+  <img alt="React Three Fiber" src="https://img.shields.io/badge/@react--three/xr-6.6-050712?style=flat-square&logo=threedotjs&logoColor=white">
+  <img alt="3D by Aholo" src="https://img.shields.io/badge/3D-Aholo%20Lux3D%20%2B%20World-1f2bff?style=flat-square">
+  <img alt="Cloudflare Workers" src="https://img.shields.io/badge/deployed-Cloudflare%20Workers-050712?style=flat-square&logo=cloudflareworkers&logoColor=white">
   <a href="LICENSE"><img alt="MIT" src="https://img.shields.io/badge/code-MIT-f1f2f6?style=flat-square"></a>
 </p>
 
 <p align="center">
-  <img src="docs/mr-placed.png" alt="Emulated Quest 3 in a living room: a hand tray of eight furniture cards, with an armchair, a wardrobe and a plant placed on the floor" width="49%" />
-  <img src="docs/mr-styled.png" alt="The same room after one pinch on Cyberpunk: the armchair turns magenta and the wardrobe doors stand open" width="49%" />
+  <img src="docs/mr-furnished.png" alt="Inside an Aholo-generated living room on an emulated Quest 3: a sofa against the left wall facing the TV, a round rug, coffee table, armchair by the window and a plant, with the hand tray of furniture cards at lap height" width="100%" />
 </p>
 
-## Meta Quest: ReRoom MR
+<table>
+<tr>
+<td width="33%"><b>Track</b><br/>Productivity</td>
+<td width="33%"><b>Division</b><br/>New Experience</td>
+<td width="33%"><b>Device</b><br/>Meta Quest 3 / 3S · Quest Browser</td>
+</tr>
+</table>
 
-**Open it:** on your Quest, launch the Meta Quest Browser, go to **https://reroom-mr.adoranto737.workers.dev/xr** and tap **Enter mixed reality** (or **Enter VR** for a virtual room corner). Nothing to install, no account.
+**Try it:** on your Quest, open the Meta Quest Browser, go to **[reroom-mr.adoranto737.workers.dev/xr](https://reroom-mr.adoranto737.workers.dev/xr)** and tap **Enter mixed reality** to furnish the room you are sitting in, or **Enter VR** to furnish a real living room generated with Aholo World.
 
-**Built for:** Productivity track, New Experience. Meta Quest 3 / 3S (passthrough + hand tracking), WebXR in the Quest Browser.
+## The problem
 
-### Hands-first interactions
+Every empty room asks one question: *will it fit?* Today we answer it with a tape measure and a guess. We measure an alcove, scroll a catalogue on a flat screen, picture a 228 cm sofa against a 212 cm wall, and find out when the delivery arrives. A photo can't show scale, and a phone AR view is a small window you hold at arm's length.
+
+## The answer: put the furniture in the room, at true size, with your hands
+
+ReRoom MR runs in the Quest Browser. A small tray of real furniture floats at your lap. You pinch a piece and it stands on your floor at its true dimensions, through passthrough. You drag it to the wall with a pinch, turn it to face the TV, open the wardrobe to check the door clears the bed, and restyle the whole room in one pinch. You never stand up, and you never pick up a controller.
+
+<table>
+<tr>
+<td><img src="docs/mr-room-styled.png" alt="The same living room after one pinch on a room style: every piece re-finished at once" /></td>
+<td><img src="docs/mr-styled.png" alt="Mixed reality in the emulator's synthetic living room: the armchair restyled and the wardrobe doors open" /></td>
+</tr>
+<tr>
+<td align="center"><sub>VR: a real Aholo-generated living room, furnished and restyled</sub></td>
+<td align="center"><sub>Mixed reality: wardrobe doors open on their real joints</sub></td>
+</tr>
+</table>
+
+## Hands-first interactions
 
 Everything works with bare hands. Controllers are supported too, never needed.
 
 | Gesture | What it does |
 |---|---|
-| **Pinch a card** on the hand tray | Places that piece, at real size, on your real floor about 2 m in front of you |
+| **Pinch a card** on the hand tray | Places that piece, at real size, on your floor about 2 m in front of you |
 | **Pinch a piece** | Selects it (blue ring) and shows its floating controls |
-| **Pinch and hold, then move your hand** | Drags the piece across your floor, following where your hand ray meets the floor |
-| **Pinch ⟲ 15° / ⟳ 15°** | Rotates the selected piece |
+| **Pinch and hold, then move your hand** | Drags the piece across the floor, following where your hand ray meets it |
+| **Pinch ⟲ 15° / ⟳ 15°** | Turns the selected piece |
 | **Pinch Open / Close** | Swings its doors or slides its drawers (wardrobe, chest of drawers: real URDF joints) |
 | **Pinch a style** (Original, Japandi, Industrial, Cyberpunk) | Restyles every piece in the room at once |
 | **Pinch Remove / Clear** | Removes the selected piece, or everything |
 
-Actions fire on pinch-down, so a hand that drifts while you let go never misses a button.
+Design choices that came out of testing with the emulator's hands:
+- Actions fire on **pinch-down**. A hand drifts while it lets go, so acting on release missed buttons.
+- Dragging **captures the pointer** and intersects the hand ray with the floor plane, so the piece you are holding never blocks its own ray.
+- Floating controls sit **above the tray's line of sight**, so aiming at a control never lands on a tray card.
 
-### Seated and quick to start
+## Seated and quick to start
 
-- The tray floats at lap height, 55 cm ahead and tilted toward you, so every card is within a seated reach and readable without leaning.
-- Furniture lands 2 m out, in a row in front of you. You never need to stand or turn around.
-- Cold start is one page load and one tap: no install, no sign-in, no tutorial. All 8 pieces and 3 styles are pre-generated, compressed GLBs served from the same origin, so nothing waits on an AI call in the headset.
+- The tray rests at lap height, 55 cm ahead and tilted toward you: every card is within a seated reach.
+- Furniture lands in a row about 2 m out. You never need to stand or turn around.
+- Cold start is one page load and one tap: no install, no sign-in, no tutorial. The 8 pieces and 3 styles are pre-generated, compressed GLBs served from the same origin, so nothing waits on an AI call inside the headset.
 
-### The furniture
+## How it works
 
-Every piece was generated with Aholo Lux3D (text-to-3D, then optimized), the doors and drawers come from Lux3D's articulation step as URDF, and each style is a pre-baked material variant. That is why they look real, open like real furniture, and load fast.
+```mermaid
+flowchart LR
+  U["Quest Browser<br/>/xr"] -->|tap Enter| S["WebXR session<br/>immersive-ar or immersive-vr<br/>hand-tracking"]
+  S --> H["@react-three/xr hands<br/>ray, touch and grab pointers"]
+  H -->|pinch-down| T["Hand tray<br/>8 cards, 4 styles"]
+  T -->|place| P["PieceModel<br/>GLB fitted to catalogue size"]
+  H -->|pinch-drag| D["Pointer capture<br/>ray ∩ floor plane"]
+  D --> P
+  H -->|Open / Close| J["URDF joints<br/>revolute and prismatic"]
+  J --> P
+  T -->|style| V["Pre-baked material variants"]
+  V --> P
+  S -->|VR only| R["Aholo World room<br/>ground-projected 360°"]
+  A[("Same-origin assets<br/>Cloudflare Workers")] --> P
+  A --> R
+```
 
-### Test it without a headset
+| Piece | Where |
+|---|---|
+| Entry page, support check, Enter MR / VR | `src/app/xr/page.tsx` |
+| The XR scene: tray, pieces, drag, controls, URDF joints, styles, Aholo room | `src/components/xr/MRRoom.tsx` |
+| Furniture catalogue (true dimensions) | `content/library.json` |
+| Which pieces open, and their style variants | `content/manifest.json` |
+| Models, articulated parts, variants, thumbnails | `public/library/` |
+| 360° rooms generated with Aholo World | `public/rooms/` |
+| Emulator test that drives the hands | `scripts/xr-demo.mjs` |
 
-`/xr` ships Meta's [Immersive Web Emulation Runtime](https://github.com/meta-quest/immersive-web-emulation-runtime) (IWER). On `localhost` it emulates a Quest 3 with hand tracking and a synthetic living room for passthrough:
+**Where the 3D comes from.** Every piece was generated with Aholo Lux3D (text-to-3D, then optimised). Its articulation step found the doors and drawers and wrote them as URDF; ReRoom MR rebuilds each joint as a pivot in three.js and animates it. Each style is a material variant baked ahead of time with Lux3D material transfer. The VR room is an Aholo World generation, projected onto a floor at y = 0 so furniture stands on it.
+
+## Test it without a headset
+
+`/xr` ships Meta's [Immersive Web Emulation Runtime](https://github.com/meta-quest/immersive-web-emulation-runtime) (IWER). On `localhost` it emulates a Quest 3 with hand tracking and a synthetic living room for passthrough.
 
 ```bash
 pnpm install
-pnpm dev --port 3200                                   # open http://localhost:3200/xr, tap Enter mixed reality
-node scripts/xr-demo.mjs http://localhost:3200 tmp/xr   # scripted hands: place, drag, open, rotate, style, remove
-node scripts/xr-demo.mjs http://localhost:3200 tmp/xr --video   # same, recorded to a .webm
+pnpm dev --port 3200                                           # open http://localhost:3200/xr
+node scripts/xr-demo.mjs http://localhost:3200 tmp/xr          # MR: place, select, drag, open, rotate, style, remove
+node scripts/xr-demo.mjs http://localhost:3200 tmp/vr --vr     # VR: furnish the Aholo living room step by step
+node scripts/xr-demo.mjs http://localhost:3200 tmp/vr --vr --video   # the same, recorded to .webm
+pnpm test                                                      # self-checks (sizing, share links, guards)
 ```
 
-`scripts/xr-demo.mjs` moves the emulated right hand from a seated rest pose, aims its ray at each target and pinches, checks the result of every step (pieces placed, moved, removed), and screenshots each stage.
+`scripts/xr-demo.mjs` moves the emulated right hand from a seated rest pose, aims its ray at named targets, pinches, and checks the result of each step (pieces placed, moved, removed). It prints a timestamp for every step.
 
-Code: `src/app/xr/page.tsx` (entry), `src/components/xr/MRRoom.tsx` (the whole XR scene, built with `@react-three/xr`).
+**Verified in the emulator:** pinch to place, select, pinch-drag across the floor, rotate, open the wardrobe doors, all four room styles, remove. **Not yet verified on a physical Quest.**
+
+## Deploy
+
+```bash
+pnpm cf:deploy    # OpenNext build + wrangler deploy, worker "reroom-mr"
+```
+
+The Quest experience needs no API key: it only serves pre-generated assets.
+
+## Roadmap
+
+- Test and tune on a physical Quest 3 (tray height, pinch thresholds, passthrough lighting).
+- Anchor furniture with WebXR plane detection and hit-test, so pieces snap to the real floor and walls.
+- Bring the web studio's room scan into the headset: scan with a phone, walk the scanned room on Quest.
+- Generate a new piece from a spoken description or a product photo, in the headset.
+- Share a furnished room as a link others open on their own Quest.
 
 ---
 
-ReRoom MR also includes the ReRoom web studio it was built from: scan a room, remix it and restyle it in the browser. The rest of this README covers that.
+ReRoom MR includes the ReRoom web studio it was built from: scan a room, remix it and restyle it in the browser. The rest of this README covers that.
+
 
 ## In one minute
 
