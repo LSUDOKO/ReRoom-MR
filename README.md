@@ -79,6 +79,10 @@ Design choices that came out of testing with the emulator's hands:
 
 ## How it works
 
+<img src="docs/architecture.png" alt="ReRoom MR architecture: Quest Browser and hands, the XR scene, real 3D by Aholo, Cloudflare Workers" width="100%" />
+
+<details><summary>Same flow as a Mermaid diagram</summary>
+
 ```mermaid
 flowchart LR
   U["Quest Browser<br/>/xr"] -->|tap Enter| S["WebXR session<br/>immersive-ar or immersive-vr<br/>hand-tracking"]
@@ -95,6 +99,8 @@ flowchart LR
   A[("Same-origin assets<br/>Cloudflare Workers")] --> P
   A --> R
 ```
+
+</details>
 
 | Piece | Where |
 |---|---|
