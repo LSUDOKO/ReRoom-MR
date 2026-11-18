@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "reroom",
+  "name": "reroom-mr",
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-11-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
@@ -11,7 +11,7 @@
   "vars": {
     "AHOLO_REGION": "com",
     "AHOLO_MAX_CONCURRENCY": "2",
-    "SITE_URL": "https://reroom.adoranto737.workers.dev",
+    "SITE_URL": "https://reroom-mr.adoranto737.workers.dev",
     "DAILY_TASK_BUDGET": "300"
   },
   // Daily Lux3D/World task budget (approximate counter).

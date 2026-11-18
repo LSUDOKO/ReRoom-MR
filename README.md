@@ -2,29 +2,74 @@
   <img src="public/logo-512.png" alt="ReRoom" width="112" />
 </p>
 
-<h1 align="center">ReRoom</h1>
+<h1 align="center">ReRoom MR</h1>
 
-<p align="center"><b>Scan it. Remix it. Live in it.</b><br/>
-Redesign your real room in 3D: scan it with your phone, add AI furniture whose doors and drawers really open, and restyle everything in one tap.</p>
+<p align="center"><b>Furnish your real room with your hands.</b><br/>
+A hands-first, seated mixed reality app for Meta Quest. Pinch real-size furniture onto your own floor, drag it around, open its doors and drawers, and restyle the whole room. No controllers.</p>
 
 <p align="center">
-  <a href="https://reroom.adoranto737.workers.dev"><img alt="Live site" src="https://img.shields.io/badge/live%20site-open-1b68fc?style=flat-square&logo=cloudflare&logoColor=white"></a>
-  <a href="https://reroom.adoranto737.workers.dev/studio?room=industrial-loft&demo=1"><img alt="Try the studio" src="https://img.shields.io/badge/studio-try%20a%20sample%20room-1f2bff?style=flat-square"></a>
-  <a href="https://reroom.adoranto737.workers.dev/made-with-aholo"><img alt="Made with Aholo" src="https://img.shields.io/badge/every%203D%20object-made%20with%20Aholo-aeb4ff?style=flat-square"></a>
-  <br/>
-  <img alt="Aholo Lux3D" src="https://img.shields.io/badge/Aholo-Lux3D%20·%20World%20·%20Viewer-050712?style=flat-square">
-  <img alt="Next.js 16" src="https://img.shields.io/badge/Next.js-16-050712?style=flat-square&logo=nextdotjs&logoColor=white">
-  <img alt="React Three Fiber" src="https://img.shields.io/badge/React%20Three%20Fiber-9-050712?style=flat-square&logo=threedotjs&logoColor=white">
-  <img alt="Cloudflare Workers" src="https://img.shields.io/badge/Cloudflare-Workers-050712?style=flat-square&logo=cloudflareworkers&logoColor=white">
+  <a href="https://reroom-mr.adoranto737.workers.dev/xr"><img alt="Open on Meta Quest" src="https://img.shields.io/badge/Meta%20Quest-open%20%2Fxr-1b68fc?style=flat-square&logo=meta&logoColor=white"></a>
+  <img alt="WebXR" src="https://img.shields.io/badge/WebXR-passthrough%20%2B%20hand%20tracking-050712?style=flat-square">
+  <img alt="Hands first" src="https://img.shields.io/badge/input-hands%20only-aeb4ff?style=flat-square">
+  <img alt="Seated" src="https://img.shields.io/badge/comfort-seated-f1f2f6?style=flat-square">
   <a href="LICENSE"><img alt="MIT" src="https://img.shields.io/badge/code-MIT-f1f2f6?style=flat-square"></a>
-  <img alt="Manycore Aholo Global 3D AI Hackathon" src="https://img.shields.io/badge/Manycore%20Aholo-Global%203D%20AI%20Hackathon%202026-1b68fc?style=flat-square">
 </p>
-
-<img src=".github/banner.png" alt="ReRoom: the chrome RR wordmark over a torn-paper render of a furnished loft, with the Lux3D armchair" width="100%" />
 
 <p align="center">
-  <img src=".github/readme/landing-scroll.gif" alt="Scrolling the ReRoom landing page: the Lux3D armchair travels from section to section, dissolves into particles, draws a wireframe room, flies apart into its parts, changes finish and lands in a phone" width="100%" />
+  <img src="docs/mr-placed.png" alt="Emulated Quest 3 in a living room: a hand tray of eight furniture cards, with an armchair, a wardrobe and a plant placed on the floor" width="49%" />
+  <img src="docs/mr-styled.png" alt="The same room after one pinch on Cyberpunk: the armchair turns magenta and the wardrobe doors stand open" width="49%" />
 </p>
+
+## Meta Quest: ReRoom MR
+
+**Open it:** on your Quest, launch the Meta Quest Browser, go to **https://reroom-mr.adoranto737.workers.dev/xr** and tap **Enter mixed reality** (or **Enter VR** for a virtual room corner). Nothing to install, no account.
+
+**Built for:** Productivity track, New Experience. Meta Quest 3 / 3S (passthrough + hand tracking), WebXR in the Quest Browser.
+
+### Hands-first interactions
+
+Everything works with bare hands. Controllers are supported too, never needed.
+
+| Gesture | What it does |
+|---|---|
+| **Pinch a card** on the hand tray | Places that piece, at real size, on your real floor about 2 m in front of you |
+| **Pinch a piece** | Selects it (blue ring) and shows its floating controls |
+| **Pinch and hold, then move your hand** | Drags the piece across your floor, following where your hand ray meets the floor |
+| **Pinch ⟲ 15° / ⟳ 15°** | Rotates the selected piece |
+| **Pinch Open / Close** | Swings its doors or slides its drawers (wardrobe, chest of drawers: real URDF joints) |
+| **Pinch a style** (Original, Japandi, Industrial, Cyberpunk) | Restyles every piece in the room at once |
+| **Pinch Remove / Clear** | Removes the selected piece, or everything |
+
+Actions fire on pinch-down, so a hand that drifts while you let go never misses a button.
+
+### Seated and quick to start
+
+- The tray floats at lap height, 55 cm ahead and tilted toward you, so every card is within a seated reach and readable without leaning.
+- Furniture lands 2 m out, in a row in front of you. You never need to stand or turn around.
+- Cold start is one page load and one tap: no install, no sign-in, no tutorial. All 8 pieces and 3 styles are pre-generated, compressed GLBs served from the same origin, so nothing waits on an AI call in the headset.
+
+### The furniture
+
+Every piece was generated with Aholo Lux3D (text-to-3D, then optimized), the doors and drawers come from Lux3D's articulation step as URDF, and each style is a pre-baked material variant. That is why they look real, open like real furniture, and load fast.
+
+### Test it without a headset
+
+`/xr` ships Meta's [Immersive Web Emulation Runtime](https://github.com/meta-quest/immersive-web-emulation-runtime) (IWER). On `localhost` it emulates a Quest 3 with hand tracking and a synthetic living room for passthrough:
+
+```bash
+pnpm install
+pnpm dev --port 3200                                   # open http://localhost:3200/xr, tap Enter mixed reality
+node scripts/xr-demo.mjs http://localhost:3200 tmp/xr   # scripted hands: place, drag, open, rotate, style, remove
+node scripts/xr-demo.mjs http://localhost:3200 tmp/xr --video   # same, recorded to a .webm
+```
+
+`scripts/xr-demo.mjs` moves the emulated right hand from a seated rest pose, aims its ray at each target and pinches, checks the result of every step (pieces placed, moved, removed), and screenshots each stage.
+
+Code: `src/app/xr/page.tsx` (entry), `src/components/xr/MRRoom.tsx` (the whole XR scene, built with `@react-three/xr`).
+
+---
+
+ReRoom MR also includes the ReRoom web studio it was built from: scan a room, remix it and restyle it in the browser. The rest of this README covers that.
 
 ## In one minute
 
@@ -78,7 +123,7 @@ Every 3D object on the website, from the hero armchair to the icons, was generat
 
 ## How to use ReRoom
 
-**Try it with no setup:** open the [sample loft in demo mode](https://reroom.adoranto737.workers.dev/studio?room=industrial-loft&demo=1). Everything in the library works, nothing is generated, and nothing is saved anywhere but your browser.
+**Try it with no setup:** open the [sample loft in demo mode](https://reroom-mr.adoranto737.workers.dev/studio?room=industrial-loft&demo=1). Everything in the library works, nothing is generated, and nothing is saved anywhere but your browser.
 
 | Step | What to do | What happens |
 |---|---|---|
@@ -137,7 +182,7 @@ flowchart LR
 
 ## Everything we generated with Aholo
 
-All of it lives in this repo, is browsable on the landing page's **Made with Aholo** gallery, and is listed with prompts on [`/made-with-aholo`](https://reroom.adoranto737.workers.dev/made-with-aholo).
+All of it lives in this repo, is browsable on the landing page's **Made with Aholo** gallery, and is listed with prompts on [`/made-with-aholo`](https://reroom-mr.adoranto737.workers.dev/made-with-aholo).
 
 <img src=".github/readme/board-library.webp" alt="24 furniture models generated with Lux3D text-to-3D" width="100%" />
 <img src=".github/readme/board-finishes.webp" alt="33 restyled finishes made with Lux3D material transfer" width="100%" />
@@ -165,7 +210,7 @@ The landing page is a scroll story in an **ink, paper and ultramarine** system: 
 
 ## Status
 
-Honest state of the hackathon build (18 November 2026):
+Honest state of the web studio (18 November 2026):
 
 | | Feature | How it was verified |
 |---|---|---|

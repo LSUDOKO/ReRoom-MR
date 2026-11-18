@@ -2,7 +2,7 @@ import Link from "next/link";
 import { MobileNav } from "./MobileNav";
 import { Logo, LogoMark } from "./ui";
 
-export const GITHUB_URL = "https://github.com/LSUDOKO/ReRoom";
+export const GITHUB_URL = "https://github.com/LSUDOKO/ReRoom-MR";
 
 export function GithubIcon({ size = 18 }: { size?: number }) {
   return (
@@ -18,6 +18,7 @@ const NAV = [
   ["/#styles", "Styles"],
   ["/#assets", "Assets"],
   ["/#aholo", "Aholo"],
+  ["/xr", "Meta Quest"],
 ];
 
 /** Floating dark-glass pill. `overlay` floats it over the landing hero; elsewhere it sits on an ink strip. */
@@ -64,6 +65,7 @@ export function SiteFooter() {
           {[
             ["/scan", "Scan a room"],
             ["/studio", "Studio"],
+            ["/xr", "Meta Quest (MR)"],
             ["/made-with-aholo", "Made with Aholo"],
             ["/privacy", "Privacy"],
             ["/terms", "Terms"],
@@ -78,7 +80,7 @@ export function SiteFooter() {
           Built on
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/brand/aholo.svg" alt="Aholo" className="h-4 w-auto opacity-90" />
-          by Manycore · Manycore Aholo Global 3D AI Hackathon 2026
+          by Manycore
         </p>
         <p className="mono-label text-mist/70">Every 3D object on this site was generated with Aholo</p>
       </div>
