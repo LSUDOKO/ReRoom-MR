@@ -16,6 +16,7 @@ A hands-first, seated mixed reality app for Meta Quest. Pinch real-size furnitur
   <img alt="React Three Fiber" src="https://img.shields.io/badge/@react--three/xr-6.6-050712?style=flat-square&logo=threedotjs&logoColor=white">
   <img alt="3D by Aholo" src="https://img.shields.io/badge/3D-Aholo%20Lux3D%20%2B%20World-1f2bff?style=flat-square">
   <img alt="Cloudflare Workers" src="https://img.shields.io/badge/deployed-Cloudflare%20Workers-050712?style=flat-square&logo=cloudflareworkers&logoColor=white">
+  <a href="https://github.com/LSUDOKO/ReRoom-MR/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/LSUDOKO/ReRoom-MR/actions/workflows/ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="MIT" src="https://img.shields.io/badge/code-MIT-f1f2f6?style=flat-square"></a>
 </p>
 
@@ -32,6 +33,16 @@ A hands-first, seated mixed reality app for Meta Quest. Pinch real-size furnitur
 </table>
 
 **Try it:** on your Quest, open the Meta Quest Browser, go to **[reroom-mr.adoranto737.workers.dev/xr](https://reroom-mr.adoranto737.workers.dev/xr)** and tap **Enter mixed reality** to furnish the room you are sitting in, or **Enter VR** to furnish a real living room generated with Aholo World.
+
+<p align="center">
+  <a href="JUDGES.md"><b>Evidence for judges</b></a> ·
+  <a href="ARCHITECTURE.md">Architecture</a> ·
+  <a href="TESTING.md">Testing</a> ·
+  <a href="SECURITY.md">Security</a> ·
+  <a href="DEPLOYMENT.md">Deployment</a> ·
+  <a href="ROADMAP.md">Roadmap</a> ·
+  <a href="CHANGELOG.md">Changelog</a>
+</p>
 
 ## The problem
 

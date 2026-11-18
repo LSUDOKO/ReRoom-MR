@@ -5,6 +5,7 @@ import { pickUrl } from "../src/lib/aholo/server.ts";
 import { decodeDesign, encodeDesign } from "../src/lib/share.ts";
 import { scaleFor, scaledDims } from "../src/lib/store.ts";
 import { guessCategory } from "../src/lib/catalog.ts";
+import { controlsHeight, floorPoint, jointTarget, spawnSlot } from "../src/lib/xr.ts";
 
 // prompt guard
 assert.equal(checkPrompt("a gun cabinet").ok, false);
@@ -59,4 +60,23 @@ assert.equal(decodeDesign("garbage"), null);
   assert.equal(new Set(HERO_KEYFRAMES.map((k) => k.section)).size, HERO_KEYFRAMES.length, "duplicate keyframe section");
 }
 
+
+// Quest: a seated hand at 1 m aiming 45° down hits the floor 1 m ahead
+const near = (a: number, b: number) => Math.abs(a - b) < 1e-9;
+const hit = floorPoint({ x: 0, y: 1, z: 0 }, { x: 0, y: -Math.SQRT1_2, z: -Math.SQRT1_2 });
+assert.ok(hit && near(hit[0], 0) && near(hit[1], -1));
+// rays that never reach the floor, or reach it too far away, don't move the piece
+assert.equal(floorPoint({ x: 0, y: 1, z: 0 }, { x: 0, y: 0.2, z: -1 }), null);
+assert.equal(floorPoint({ x: 0, y: 1, z: 0 }, { x: 0, y: 0, z: -1 }), null);
+assert.equal(floorPoint({ x: 0, y: 1, z: 0 }, { x: 0, y: -0.1, z: -1 }), null);
+// placement rows of three, 2.1 m ahead, then a row further back
+assert.deepEqual(spawnSlot(0), { x: -1.1, z: -2.1 });
+assert.ok(near(spawnSlot(2).x, 1.1) && spawnSlot(3).z < -2.9);
+// joints open toward their larger limit; continuous joints swing a quarter turn
+assert.equal(jointTarget("revolute", -1.57, 0), -1.57);
+assert.equal(jointTarget("prismatic", 0, 0.35), 0.35);
+assert.equal(jointTarget("continuous", 0, 0), Math.PI / 2);
+// piece controls always clear the lap tray's line of sight
+assert.equal(controlsHeight(0.4), 1.55);
+assert.ok(near(controlsHeight(2.1), 2.35));
 console.log("selfcheck: all passed");

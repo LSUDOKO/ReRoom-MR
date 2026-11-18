@@ -14,6 +14,7 @@ import { GroundedSkybox } from "three/examples/jsm/objects/GroundedSkybox.js";
 const ROOM_YAW = Math.PI / 2; // turns the room so its window wall faces you
 import library from "../../../content/library.json";
 import manifest from "../../../content/manifest.json";
+import { controlsHeight, floorPoint, jointTarget, spawnSlot } from "@/lib/xr";
 
 const VARIANTS = manifest.variants as Record<string, Record<string, string>>;
 const URDF = new Set(manifest.urdf as string[]);
@@ -100,7 +101,7 @@ function useUrdf(id: string, enabled: boolean) {
           const lim = j.querySelector("limit");
           const lower = type === "continuous" ? 0 : Number(lim?.getAttribute("lower") ?? 0);
           const upper = type === "continuous" ? Math.PI / 2 : Number(lim?.getAttribute("upper") ?? (type === "prismatic" ? 0.3 : Math.PI / 2));
-          joints.push({ node: child, type: type === "prismatic" ? "prismatic" : "revolute", axis: new THREE.Vector3(ax, ay, az).normalize(), target: Math.abs(upper) >= Math.abs(lower) ? upper : lower });
+          joints.push({ node: child, type: type === "prismatic" ? "prismatic" : "revolute", axis: new THREE.Vector3(ax, ay, az).normalize(), target: jointTarget(type ?? "", lower, upper) });
         }
       }
       const rootName = [...links.keys()].find((n) => !children.has(n)) ?? [...links.keys()][0];
@@ -204,8 +205,6 @@ function Tray({ onAdd, style, setStyle, count, onClear }: { onAdd: (id: string) 
   );
 }
 
-const FLOOR = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
-const hit = new THREE.Vector3();
 
 function PieceModel({ piece, style, selected, onSelect, onMove }: { piece: Piece; style: string | null; selected: boolean; onSelect: () => void; onMove: (x: number, z: number) => void }) {
   const lib = library.find((l) => l.id === piece.id)!;
@@ -246,8 +245,8 @@ function PieceModel({ piece, style, selected, onSelect, onMove }: { piece: Piece
           dragging.current = true;
         }}
         onPointerMove={(e: ThreeEvent<PointerEvent>) => {
-          if (!dragging.current || !e.ray.intersectPlane(FLOOR, hit) || hit.length() > 6) return;
-          onMove(hit.x, hit.z);
+          const at = dragging.current && floorPoint(e.ray.origin, e.ray.direction);
+          if (at) onMove(at[0], at[1]);
         }}
         onPointerUp={(e: ThreeEvent<PointerEvent>) => {
           (e.target as unknown as THREE.Object3D).releasePointerCapture?.(e.pointerId);
@@ -271,7 +270,7 @@ function PieceControls({ piece, onRotate, onToggle, onRemove }: { piece: Piece; 
   useFrame(({ camera }) => {
     if (!ref.current) return;
     // above the tray's line of sight, so a ray aimed at a control never lands on a tray card
-    ref.current.position.set(piece.x, Math.max(lib.dims.h + 0.25, 1.55), piece.z);
+    ref.current.position.set(piece.x, controlsHeight(lib.dims.h), piece.z);
     ref.current.lookAt(camera.position.x, ref.current.position.y, camera.position.z);
   });
   return (
@@ -300,7 +299,7 @@ function Scene() {
   }, [three.scene]);
   const add = (id: string) => {
     const n = pieces.length;
-    const p: Piece = { uid: uid.current++, id, x: ((n % 3) - 1) * 1.1, z: -2.1 - Math.floor(n / 3) * 0.9, yaw: 0, open: false };
+    const p: Piece = { uid: uid.current++, id, ...spawnSlot(n), yaw: 0, open: false };
     setPieces((ps) => [...ps, p]);
     setSelected(p.uid);
   };
