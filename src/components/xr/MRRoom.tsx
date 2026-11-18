@@ -9,6 +9,9 @@ import { Canvas, useFrame, useThree, type ThreeEvent } from "@react-three/fiber"
 import { createXRStore, XR, useXR } from "@react-three/xr";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
+import { GroundedSkybox } from "three/examples/jsm/objects/GroundedSkybox.js";
+
+const ROOM_YAW = Math.PI / 2; // turns the room so its window wall faces you
 import library from "../../../content/library.json";
 import manifest from "../../../content/manifest.json";
 
@@ -267,7 +270,8 @@ function PieceControls({ piece, onRotate, onToggle, onRemove }: { piece: Piece; 
   const ref = useRef<THREE.Group>(null);
   useFrame(({ camera }) => {
     if (!ref.current) return;
-    ref.current.position.set(piece.x, lib.dims.h + 0.22, piece.z);
+    // above the tray's line of sight, so a ray aimed at a control never lands on a tray card
+    ref.current.position.set(piece.x, Math.max(lib.dims.h + 0.25, 1.55), piece.z);
     ref.current.lookAt(camera.position.x, ref.current.position.y, camera.position.z);
   });
   return (
@@ -327,24 +331,27 @@ function Scene() {
   );
 }
 
-/** VR fallback when passthrough is unavailable: a calm room corner to furnish. */
+/** VR mode: a real room to furnish, a 360° interior generated with Aholo World, seen from a seated eye height. */
+function RoomPanorama() {
+  const tex = useTexture("/rooms/japandi-studio.jpg");
+  // ground-projected, so the room's own floor sits at y = 0 and furniture stands on it
+  const sky = useMemo(() => {
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.mapping = THREE.EquirectangularReflectionMapping;
+    const g = new GroundedSkybox(tex, 1.25, 9);
+    g.position.y = 1.25 - 0.01;
+    g.rotation.y = ROOM_YAW;
+    g.raycast = () => null;
+    return g;
+  }, [tex]);
+  return <primitive object={sky} />;
+}
+
 function VirtualRoom() {
   return (
-    <group>
-      <color attach="background" args={["#0b0e1d"]} />
-      <mesh rotation={[-Math.PI / 2, 0, 0]} raycast={() => null}>
-        <planeGeometry args={[8, 8]} />
-        <meshStandardMaterial color="#c9b89a" roughness={0.9} />
-      </mesh>
-      <mesh position={[0, 1.4, -3]} raycast={() => null}>
-        <planeGeometry args={[8, 2.8]} />
-        <meshStandardMaterial color="#eae4d8" />
-      </mesh>
-      <mesh position={[-3, 1.4, 0]} rotation={[0, Math.PI / 2, 0]} raycast={() => null}>
-        <planeGeometry args={[8, 2.8]} />
-        <meshStandardMaterial color="#e2dccf" />
-      </mesh>
-    </group>
+    <Suspense fallback={<color attach="background" args={["#0b0e1d"]} />}>
+      <RoomPanorama />
+    </Suspense>
   );
 }
 
