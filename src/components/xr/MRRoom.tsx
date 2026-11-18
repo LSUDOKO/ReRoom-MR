@@ -27,7 +27,7 @@ const INK = "#050712";
 export const xrStore = createXRStore({
   // Meta's IWER emulator stands in for a Quest 3 on desktop (localhost only), with hand input and a
   // synthetic living room for passthrough, so the whole experience can be tested without a headset.
-  emulate: { type: "metaQuest3", primaryInputMode: "hand", syntheticEnvironment: "living_room" },
+  emulate: { type: "metaQuest3", primaryInputMode: "hand", syntheticEnvironment: "living_room", inject: { hostname: "localhost" }, headset: { position: [0, 1.25, 0] } },
   hand: { touchPointer: true, rayPointer: true, grabPointer: true },
   controller: true,
 });
@@ -125,7 +125,7 @@ function Button({ label, onPress, position, width = 0.16, active = false, disabl
         name={`btn:${label}`}
         onPointerEnter={() => setHover(true)}
         onPointerLeave={() => setHover(false)}
-        onClick={(e) => {
+        onPointerDown={(e) => {
           e.stopPropagation();
           if (!disabled) onPress();
         }}
@@ -152,7 +152,7 @@ function TrayCard({ id, position, onPick }: { id: string; position: [number, num
   });
   return (
     <group position={position}>
-      <mesh name={`tray:${id}`} onPointerEnter={() => setHover(true)} onPointerLeave={() => setHover(false)} onClick={(e) => (e.stopPropagation(), onPick())}>
+      <mesh name={`tray:${id}`} onPointerEnter={() => setHover(true)} onPointerLeave={() => setHover(false)} onPointerDown={(e) => (e.stopPropagation(), onPick())}>
         <planeGeometry args={[0.13, 0.15]} />
         <meshBasicMaterial color={hover ? "#1e2c5a" : "#10142a"} transparent opacity={0.92} />
       </mesh>
@@ -201,7 +201,10 @@ function Tray({ onAdd, style, setStyle, count, onClear }: { onAdd: (id: string) 
   );
 }
 
-function PieceModel({ piece, style, selected, onSelect, onDragStart }: { piece: Piece; style: string | null; selected: boolean; onSelect: () => void; onDragStart: () => void }) {
+const FLOOR = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+const hit = new THREE.Vector3();
+
+function PieceModel({ piece, style, selected, onSelect, onMove }: { piece: Piece; style: string | null; selected: boolean; onSelect: () => void; onMove: (x: number, z: number) => void }) {
   const lib = library.find((l) => l.id === piece.id)!;
   const articulated = URDF.has(piece.id);
   const variant = style ? VARIANTS[piece.id]?.[style] : undefined;
@@ -211,6 +214,7 @@ function PieceModel({ piece, style, selected, onSelect, onDragStart }: { piece: 
   const group = useRef<THREE.Group>(null);
   const born = useRef(0);
   const openness = useRef(0);
+  const dragging = useRef(false);
   useFrame((_, dt) => {
     born.current = Math.min(1, born.current + dt * 2.5);
     const e = 1 - Math.pow(1 - born.current, 3);
@@ -231,10 +235,20 @@ function PieceModel({ piece, style, selected, onSelect, onDragStart }: { piece: 
   return (
     <group ref={group} name={`piece:${piece.id}`}>
       <group
+        // pinch selects; keep pinching and the piece follows where your hand ray meets the floor
         onPointerDown={(e: ThreeEvent<PointerEvent>) => {
           e.stopPropagation();
           onSelect();
-          onDragStart();
+          (e.target as unknown as THREE.Object3D).setPointerCapture?.(e.pointerId);
+          dragging.current = true;
+        }}
+        onPointerMove={(e: ThreeEvent<PointerEvent>) => {
+          if (!dragging.current || !e.ray.intersectPlane(FLOOR, hit) || hit.length() > 6) return;
+          onMove(hit.x, hit.z);
+        }}
+        onPointerUp={(e: ThreeEvent<PointerEvent>) => {
+          (e.target as unknown as THREE.Object3D).releasePointerCapture?.(e.pointerId);
+          dragging.current = false;
         }}
       >
         <primitive object={obj} />
@@ -269,38 +283,20 @@ function PieceControls({ piece, onRotate, onToggle, onRemove }: { piece: Piece; 
   );
 }
 
-/** Invisible floor that turns a pinch-drag into movement along your real floor. */
-function DragFloor({ active, onMove, onEnd }: { active: boolean; onMove: (x: number, z: number) => void; onEnd: () => void }) {
-  return (
-    <mesh
-      rotation={[-Math.PI / 2, 0, 0]}
-      visible={false}
-      pointerEvents={active ? "auto" : "none"}
-      onPointerMove={(e) => active && onMove(e.point.x, e.point.z)}
-      onPointerUp={onEnd}
-      onPointerLeave={onEnd}
-    >
-      <planeGeometry args={[12, 12]} />
-      <meshBasicMaterial />
-    </mesh>
-  );
-}
-
 function Scene() {
   const [pieces, setPieces] = useState<Piece[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
-  const [dragging, setDragging] = useState<number | null>(null);
   const [style, setStyle] = useState<string | null>(null);
   const uid = useRef(1);
   const mode = useXR((s) => s.mode);
   const three = useThree();
   useEffect(() => {
     // dev only: lets scripts/xr-demo.mts drive the emulated hands at named targets
-    if (process.env.NODE_ENV === "development") Object.assign(window, { __xrScene: three.scene, __xrStore: xrStore });
+    if (process.env.NODE_ENV === "development") Object.assign(window, { __xrScene: three.scene, __xrStore: xrStore, __xrBox3: THREE.Box3 });
   }, [three.scene]);
   const add = (id: string) => {
     const n = pieces.length;
-    const p: Piece = { uid: uid.current++, id, x: ((n % 3) - 1) * 0.9, z: -1.5 - Math.floor(n / 3) * 0.8, yaw: 0, open: false };
+    const p: Piece = { uid: uid.current++, id, x: ((n % 3) - 1) * 1.1, z: -2.1 - Math.floor(n / 3) * 0.9, yaw: 0, open: false };
     setPieces((ps) => [...ps, p]);
     setSelected(p.uid);
   };
@@ -316,7 +312,7 @@ function Scene() {
       <Tray onAdd={add} style={style} setStyle={setStyle} count={pieces.length} onClear={() => (setPieces([]), setSelected(null))} />
       {pieces.map((p) => (
         <Suspense key={p.uid} fallback={null}>
-          <PieceModel piece={p} style={style} selected={p.uid === selected} onSelect={() => setSelected(p.uid)} onDragStart={() => setDragging(p.uid)} />
+          <PieceModel piece={p} style={style} selected={p.uid === selected} onSelect={() => setSelected(p.uid)} onMove={(x, z) => patch(p.uid, { x, z })} />
         </Suspense>
       ))}
       {sel && (
@@ -327,7 +323,6 @@ function Scene() {
           onRemove={() => (setPieces((ps) => ps.filter((p) => p.uid !== sel.uid)), setSelected(null))}
         />
       )}
-      <DragFloor active={dragging !== null} onMove={(x, z) => dragging !== null && patch(dragging, { x, z })} onEnd={() => setDragging(null)} />
     </>
   );
 }
